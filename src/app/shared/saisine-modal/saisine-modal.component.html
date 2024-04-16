@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-between">
+  <mat-card-subtitle class="pt-2 pb-2 fw-bold text-dark">{{ title_label }}</mat-card-subtitle>
+
+  <div *ngIf="saisine">
+    <button mat-fab color="accent" aria-label="Déposer un fichier" matTooltip="Déposer un fichier" (click)="openModal()">
+      <mat-icon>cloud_upload</mat-icon>
+    </button>
+  </div>
+</div>
+
+<form *ngIf="saisine" [formGroup]="Saisine_Form">
+  <div class="alert alert-danger" role="alert" *ngIf="error">
+    {{ erreur }}
+  </div>
+
+  <div class="col-md-6 px-2">
+    <mat-form-field appearance="outline" class="w-100">
+      <input matInput formControlName="nomsaisine" placeholder="Nom de la Saisine" />
+    </mat-form-field>
+  </div>
+
+  <div class="col-md-6 px-2">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-select placeholder="Région" formControlName="region">
+        <mat-option *ngFor="let s of type" [value]="s">{{ s }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="col-md-6 px-2">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-select placeholder="Type de tiers" formControlName="typeDeTiers">
+        <mat-option *ngFor="let s of Autre" [value]="s">{{ s }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="col-md-6 px-2">
+    <mat-form-field appearance="outline" class="w-100">
+      <input matInput placeholder="Nom du tiers" formControlName="nomDeTiers" />
+    </mat-form-field>
+  </div>
+
+  <div class="px-2">
+    <label>Importer un fichier</label>
+    <button mat-fab color="accent" aria-label="Uploader un fichier" matTooltip="Uploader un fichier" (click)="openModal()">
+      <mat-icon>cloud_upload</mat-icon>
+    </button>
+  </div>
+
+  <div class="d-flex justify-content-center pt-4">
+    <div class="px-4">
+      <button mat-button class="annuler-btn" (click)="colsePopup()">{{ button_label_1 }}</button>
+    </div>
+
+    <div class="px-4">
+      <button mat-button class="ok-btn" (click)="OnSubmitSaisine()">{{ button_label_2 }}</button>
+    </div>
+  </div>
+</form>
