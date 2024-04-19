@@ -15,6 +15,7 @@ import { SuccessMessageComponent } from './success-message/success-message.compo
 import { UploadFileModalComponent } from './upload-file-modal/upload-file-modal.component';
 import { MessageRelanceModalComponent } from './message-relance-modal/message-relance-modal.component';
 import { SupprimerConsulterChargeModalComponent } from './supprimer-consulter-charge-modal/supprimer-consulter-charge-modal.component';
+import { SignalerPrecontComponent } from './signaler-precont/signaler-precont.component';
 
 
 
@@ -30,6 +31,7 @@ import { SupprimerConsulterChargeModalComponent } from './supprimer-consulter-ch
     UploadFileModalComponent,
     MessageRelanceModalComponent,
     SupprimerConsulterChargeModalComponent,
+    SignalerPrecontComponent,
     ],
   imports: [
     CommonModule,

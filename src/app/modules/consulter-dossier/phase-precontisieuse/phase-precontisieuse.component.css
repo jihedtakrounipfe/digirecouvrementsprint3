@@ -38,3 +38,23 @@
 .mat-header-cell{
   font-size: 9px;
 }
+.pen-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+}
+.custom-button {
+  background-color: #220c86;
+  color: white;
+  width: 260px;
+  margin-right: 25px;
+  transition: background-color 0.3s ease;
+}
+.custom-button:hover {
+  background-color: #fff;
+  color: #1170C4;
+}
+.custom-button:last-child {
+  margin-right: 0;
+}

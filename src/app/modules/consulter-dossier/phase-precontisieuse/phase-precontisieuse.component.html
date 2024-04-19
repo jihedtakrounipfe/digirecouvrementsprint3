@@ -1,20 +1,72 @@
 
   <div style="line-height: 50px;">
+    <mat-card>
+      <h4 class="fw-bold">1- Informations Generales</h4>
+      <div class="row" *ngIf="precontisieuse">
+        <div class="row">
+          <div class="col-md-7">
+              <mat-label class="pb-4 fw-bold fnt-10">*Tableau d'amortissement</mat-label>
+              <div *ngIf="saisine">
+                <button mat-fab color="accent" aria-label="Déposer un fichier" matTooltip="Déposer un fichier" (click)="openModal()">
+                  <mat-icon>cloud_upload</mat-icon>
+                </button>
+              </div>
+            </div>
+            
+          </div>
+        <div class="col-md-4">
+            <mat-label class="pb-4 fw-bold fnt-10">*Titre du crédit</mat-label>
+            <mat-card class="h-input"><p class="mt-22">{{precontisieuse.titreDuCredit}}</p>
+              <mat-icon class="pen-icon">edit</mat-icon></mat-card>
+        </div>
+        <div class="col-md-4">
+            <mat-label class="pb-4 fw-bold fnt-10">*Contrat de prêt </mat-label>
+            <mat-card class="h-input"><p class="mt-22">{{precontisieuse.contratDePret}}</p>
+              <mat-icon class="pen-icon">edit</mat-icon></mat-card>
+        </div>
+        <div class="col-md-4">
+            <mat-label class="pb-4 fw-bold fnt-10">*Acte de caution</mat-label>
+            <mat-card class="h-input"><p class="mt-22">{{precontisieuse.actedecaution}}</p>
+              <mat-icon class="pen-icon">edit</mat-icon></mat-card>
+        </div>
+        <div class="col-md-4">
+            <mat-label class="pb-4 fw-bold fnt-10">*CIN</mat-label>
+            <mat-card class="h-input"><p class="mt-22">{{precontisieuse.cin}}</p>
+              <mat-icon class="pen-icon">edit</mat-icon></mat-card>
+        </div>
+        <div class="col-md-4">
+            <mat-label class="pb-4 fw-bold fnt-10">*Spéciment de signature</mat-label>
+            <mat-card class="h-input"><p class="mt-22">{{precontisieuse.signature}}</p>
+              <mat-icon class="pen-icon">edit</mat-icon></mat-card>
+        </div>
+        <div class="col-md-4">
+            <mat-label class="pb-4 fw-bold fnt-10">*Contrat de pret hypothecaire</mat-label>
+            <mat-card class="h-input"><p class="mt-22">{{precontisieuse.Contrathypothecaire}}</p>
+              <mat-icon class="pen-icon">edit</mat-icon></mat-card>
+        </div>
+        <div class="col-md-12 d-flex justify-content-end mt-4">
+          <button mat-raised-button class="custom-button" (click)="openSignalerDossierDialog()">Signaler le dossier</button>
+          <button mat-raised-button class="custom-button" (click)="validerDonnees()">Valider les données</button>
+      </div>
+
+      </div>
+  </mat-card>
 
     <mat-card >
-    <h4 class="fw-bold">Informations Generales</h4>
-      <div class="row" *ngIf="precontisieuse">
-        <div class="col-md-6">
-          <mat-label class="pb-4 fw-bold fnt-10">Nature de la créance</mat-label>
-          <mat-card class="h-input"><p class="mt-22">{{precontisieuse.natureDeLaCreance}}</p></mat-card>
+      <h4 class="fw-bold">Informations Generales</h4>
+        <div class="row" *ngIf="precontisieuse">
+          <div class="col-md-4">
+            <mat-label class="pb-4 fw-bold fnt-10">*Nature de la créance</mat-label>
+            <mat-card class="h-input"><p class="mt-22">{{precontisieuse.natureDeLaCreance}}</p></mat-card>
+          </div>
+    
+          <div class="col-md-4">
+            <mat-label class="pb-4 fw-bold fnt-10">*Garant</mat-label>
+            <mat-card class="h-input"><p class="mt-22">{{precontisieuse.garant}}</p></mat-card>
+          </div>
         </div>
-
-        <div class="col-md-6">
-          <mat-label class="pb-4 fw-bold fnt-10">Garant</mat-label>
-          <mat-card class="h-input"><p class="mt-22">{{precontisieuse.garant}}</p></mat-card>
-        </div>
-      </div>
-    </mat-card>
+      </mat-card>
+    
     <div class="form-row">
       <div [hidden]="session !== 'GROUP_DIRECTEURS'"><mat-card-subtitle class="py-2 fw-bold text-dark mt-2" >Détails de la créance</mat-card-subtitle></div>
 

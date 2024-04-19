@@ -1,6 +1,6 @@
 import { PreviewService } from 'app/services/preview.service';
 import { Subscription } from 'rxjs';
-import { Component, OnInit, Output, ViewChild,EventEmitter  } from '@angular/core';
+import { Component, OnInit, Output, Inject, ViewChild,EventEmitter  } from '@angular/core';
 import { ListDossiersService } from 'app/services/list-dossiers.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
@@ -8,6 +8,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AuthenticationService } from '@alfresco/adf-core';
 import { environment } from 'environments/environment';
+import { UploadFileModalComponent } from 'app/shared/upload-file-modal/upload-file-modal.component';
+
 
 @Component({
   selector: 'app-phase-precontisieuse',
@@ -56,8 +58,8 @@ export class PhasePrecontisieuseComponent implements OnInit {
   public add4:boolean = false;
   public updateForm4:boolean = false;
 
-  constructor(private dossiers : ListDossiersService, private api: PreviewService ,private route: ActivatedRoute,private sanitizer: DomSanitizer, private authService: AuthenticationService) { }
-
+  constructor(private dossiers : ListDossiersService, private api: PreviewService ,private route: ActivatedRoute,private sanitizer: DomSanitizer, private authService: AuthenticationService ) { }
+  
   ngOnInit(): void {
     //subscriptions by BehaviorSubject
     this.subscription =this.api.castTag.subscribe(data=>{ this.session = data
@@ -259,6 +261,7 @@ Reload(event){
       this.list4=false
      }
   }
+ 
 }
 
 
