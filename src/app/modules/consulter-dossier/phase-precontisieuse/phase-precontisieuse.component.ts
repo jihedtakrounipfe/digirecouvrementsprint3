@@ -59,7 +59,7 @@ export class PhasePrecontisieuseComponent implements OnInit {
   public updateForm4:boolean = false;
 
   constructor(private dossiers : ListDossiersService, private api: PreviewService ,private route: ActivatedRoute,private sanitizer: DomSanitizer, private authService: AuthenticationService ) { }
-  
+
   ngOnInit(): void {
     //subscriptions by BehaviorSubject
     this.subscription =this.api.castTag.subscribe(data=>{ this.session = data
@@ -67,6 +67,19 @@ export class PhasePrecontisieuseComponent implements OnInit {
     //subscriptions by folder informations
     this.getAll();
 }
+validerDonnees(){
+  this.api.validerdossierprecontieurseAPi(this.nomDossier).subscribe(response => {
+    console.log(response);
+
+  });
+}
+openSignalerDossierDialog(){
+  this.api.signalerdossierprecontieurseAPi(this.nomDossier).subscribe(response => {
+    console.log(response);
+
+  });
+}
+
   getAll(){
    this.dossiers.getDossierByName(this.nomDossier).subscribe((data:any) =>{
     this.precontisieuse = data.phaseprecontentieuse[0];
@@ -261,7 +274,7 @@ Reload(event){
       this.list4=false
      }
   }
- 
+
 }
 
 
