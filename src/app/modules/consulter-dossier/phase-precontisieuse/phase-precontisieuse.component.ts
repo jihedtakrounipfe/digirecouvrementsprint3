@@ -9,6 +9,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { AuthenticationService } from '@alfresco/adf-core';
 import { environment } from 'environments/environment';
 import { UploadFileModalComponent } from 'app/shared/upload-file-modal/upload-file-modal.component';
+import { SuccessMessageComponent } from 'app/shared/success-message/success-message.component';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+
 
 
 @Component({
@@ -37,6 +41,10 @@ export class PhasePrecontisieuseComponent implements OnInit {
   public saisine:any;
   public file;
   public subscription:Subscription;
+  showFileUploadPopup: boolean = false;
+  selectedFile: File | null = null;
+
+
 
   public list:boolean = true;
   public add:boolean = false;
@@ -57,8 +65,10 @@ export class PhasePrecontisieuseComponent implements OnInit {
   public list4:boolean = true;
   public add4:boolean = false;
   public updateForm4:boolean = false;
+  dialogRef: any;
+  dialog: any;
 
-  constructor(private dossiers : ListDossiersService, private api: PreviewService ,private route: ActivatedRoute,private sanitizer: DomSanitizer, private authService: AuthenticationService ) { }
+  constructor(private dossiers : ListDossiersService, private api: PreviewService ,private route: ActivatedRoute,private sanitizer: DomSanitizer, private authService: AuthenticationService , private http: HttpClient ) { }
   
   ngOnInit(): void {
     //subscriptions by BehaviorSubject
@@ -67,6 +77,19 @@ export class PhasePrecontisieuseComponent implements OnInit {
     //subscriptions by folder informations
     this.getAll();
 }
+validerDonnees(){
+  this.api.validerdossierprecontieurseAPi(this.nomDossier).subscribe(response => {
+    console.log(response);
+
+  });
+}
+openSignalerDossierDialog(){
+  this.api.signalerdossierprecontieurseAPi(this.nomDossier).subscribe(response => {
+    console.log(response);
+
+  });
+}
+
   getAll(){
    this.dossiers.getDossierByName(this.nomDossier).subscribe((data:any) =>{
     this.precontisieuse = data.phaseprecontentieuse[0];
@@ -261,11 +284,67 @@ Reload(event){
       this.list4=false
      }
   }
- 
+  openModal(): void {
+    this.showFileUploadPopup = true;
+  }
+
+  closeFileUploadPopup(): void {
+    this.showFileUploadPopup = false;
+  }
+
+  onFileSelected(event: any): void {
+    this.selectedFile = event.target.files[0] as File;
+  }
+
+  uploadFile(): void {
+    // Handle file upload logic here
+    // You can access the selected file using this.selectedFile
+    // Close the popup
+    this.showFileUploadPopup = false;
+  }
+  huissiers = [
+    { name: 'aziz' },
+    { name: 'ahmed'},
+    { name: 'ranim' }
+  ];
+  
+  selectedHuissier: { name: string, phoneNumber: string };
+  
+  onHuissierSelectionChange(huissierName: string) {
+    const apiUrl = `https://your-api-url.com/huissiers/${huissierName}`;
+    
+    this.http.get(apiUrl).subscribe(
+      (response: any) => {
+        this.selectedHuissier = { name: huissierName, phoneNumber: response.phoneNumber };
+      },
+      (error: any) => {
+        console.error('Error fetching phone number:', error);
+      }
+    );
+  }
+  
+  affecterForm = new FormGroup({
+    action: new FormControl("affecter", [ Validators.required ]),
+    agent: new FormControl("", [ Validators.required ]),
+  });
+  
+  openDialogAffecter() {
+    this.dialogRef.close();
+    this.dialog.open(SuccessMessageComponent, {
+      width: '600px',
+      height: '300px',
+      data:{
+        title_label: 'Le dossier a été affecté avec succès',
+        sub_title_label: 'un mail a été envoyé au huissier',
+        button_label: 'Ok',
+        success_icon:true,
+        echec_icon:false
+      }
+    });
+
+    this.dialogRef.close(this.affecterForm['value']);
+  }
 }
-
-
-
 
 
 

@@ -1,17 +1,20 @@
 
   <div style="line-height: 50px;">
-    <mat-card>
+    <mat-card class="mb-4">
       <h4 class="fw-bold">1- Informations Generales</h4>
       <div class="row" *ngIf="precontisieuse">
         <div class="row">
-          <div class="col-md-7">
-              <mat-label class="pb-4 fw-bold fnt-10">*Tableau d'amortissement</mat-label>
-              <div *ngIf="saisine">
-                <button mat-fab color="accent" aria-label="Déposer un fichier" matTooltip="Déposer un fichier" (click)="openModal()">
-                  <mat-icon>cloud_upload</mat-icon>
-                </button>
+          <div class="file-upload-popup" *ngIf="showFileUploadPopup">
+            <div class="file-upload-content">
+              <h2>Select File</h2>
+              <input type="file" (change)="onFileSelected($event)">
+              <div class="file-upload-buttons">
+                <button (click)="closeFileUploadPopup()">Cancel</button>
+                <button [disabled]="!selectedFile" (click)="uploadFile()">Upload</button>
               </div>
             </div>
+          </div>
+          
             
           </div>
         <div class="col-md-4">
@@ -52,7 +55,7 @@
       </div>
   </mat-card>
 
-    <mat-card >
+    <mat-card class="mb-4">
       <h4 class="fw-bold">Informations Generales</h4>
         <div class="row" *ngIf="precontisieuse">
           <div class="col-md-4">
@@ -66,7 +69,32 @@
           </div>
         </div>
       </mat-card>
-    
+
+      <mat-card class="mb-4">
+        <h4 class="fw-bold">2- Contacter le huissier notaire</h4>
+        <div class="row" *ngIf="precontisieuse">
+          <div class="col-md-4">
+            <mat-label class="pb-4 fw-bold fnt-10">Choisissez votre huissier notaire</mat-label>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-select placeholder="Sélectionner un huissier" formControlName="huissier" (selectionChange)="onHuissierSelectionChange($event.value.name)">
+                <mat-option *ngFor="let s of huissiers" [value]="s">{{s.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+      
+          <div class="col-md-4">
+            <mat-label class="pb-4 fw-bold fnt-10">Num de tel</mat-label>
+            <mat-card class="h-input">
+              <p class="mt-22">{{selectedHuissier ? selectedHuissier.phoneNumber : ''}}</p>
+            </mat-card>
+          </div>
+        </div>
+      
+          <div class="col-md-4 d-flex justify-content-end mt-4">
+            <button mat-button type="submit"  (click)="openDialogAffecter()" class="ok-btn">Assigner </button>
+          </div>
+      </mat-card>
+      
     <div class="form-row">
       <div [hidden]="session !== 'GROUP_DIRECTEURS'"><mat-card-subtitle class="py-2 fw-bold text-dark mt-2" >Détails de la créance</mat-card-subtitle></div>
 

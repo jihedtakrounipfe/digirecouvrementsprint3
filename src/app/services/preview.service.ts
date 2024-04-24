@@ -27,6 +27,26 @@ export class PreviewService {
         this.content = content;
         this.router.navigate([{ outlets: { overlay: ['preview', 'blob'] } }]);
     }
+    validerdossierprecontieurseAPi(nomDossier :String) {
+      const body = {
+        action: 'complet'
+      };
+      return this.http.post(`${environment.baseUrl}/s/com/addinn/verifierDossier?nomDossier=${nomDossier}&alf_ticket=${this.authService.getTicketEcm()}`, body)
+        .pipe(
+          catchError(this.errorMgmt)
+        );
+    }
+    signalerdossierprecontieurseAPi(nomDossier :String){
+      const body = {
+        action: 'incomplet'
+      };
+      return this.http.post(`${environment.baseUrl}/s/com/addinn/verifierDossier?nomDossier=${nomDossier}&&alf_ticket=${this.authService.getTicketEcm()}`, body)
+      .pipe(
+        catchError(this.errorMgmt)
+      );
+    }
+
+
 
     getuserByGroups(user){
       return this.http.get(`${environment.baseUrl}/s/com/addinn/get/getGroups?userName=${user}&alf_ticket=${this.authService.getTicketEcm()}`)
