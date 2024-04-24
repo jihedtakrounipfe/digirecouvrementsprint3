@@ -31,6 +31,7 @@ export class PreviewService {
       const body = {
         action: 'complet'
       };
+
       return this.http.post(`${environment.baseUrl}/s/com/addinn/verifierDossier?nomDossier=${nomDossier}&alf_ticket=${this.authService.getTicketEcm()}`, body)
         .pipe(
           catchError(this.errorMgmt)
@@ -45,7 +46,6 @@ export class PreviewService {
         catchError(this.errorMgmt)
       );
     }
-
 
 
     getuserByGroups(user){

@@ -70,6 +70,7 @@ export class PhasePrecontisieuseComponent implements OnInit {
 
   constructor(private dossiers : ListDossiersService, private api: PreviewService ,private route: ActivatedRoute,private sanitizer: DomSanitizer, private authService: AuthenticationService , private http: HttpClient ) { }
   
+
   ngOnInit(): void {
     //subscriptions by BehaviorSubject
     this.subscription =this.api.castTag.subscribe(data=>{ this.session = data
@@ -344,6 +345,7 @@ Reload(event){
 
     this.dialogRef.close(this.affecterForm['value']);
   }
+
 }
 
 
