@@ -68,8 +68,14 @@ export class PhasePrecontisieuseComponent implements OnInit {
   dialogRef: any;
   dialog: any;
 
-  constructor(private dossiers : ListDossiersService, private api: PreviewService ,private route: ActivatedRoute,private sanitizer: DomSanitizer, private authService: AuthenticationService , private http: HttpClient ) { }
-  
+  constructor(private dossiers : ListDossiersService, private api: PreviewService ,private route: ActivatedRoute,private sanitizer: DomSanitizer, private authService: AuthenticationService , private http: HttpClient , private paymentModalService: PaymentModalService) { }
+  onPayeClicked() {
+    this.paymentModalService.openPayeModal();
+  }
+
+  onNonPayeClicked() {
+    this.paymentModalService.openNonPayeModal();
+  }
 
   ngOnInit(): void {
     //subscriptions by BehaviorSubject
@@ -77,6 +83,7 @@ export class PhasePrecontisieuseComponent implements OnInit {
       console.log('session data',this.session)})
     //subscriptions by folder informations
     this.getAll();
+    
 }
 validerDonnees(){
   this.api.validerdossierprecontieurseAPi(this.nomDossier).subscribe(response => {
@@ -345,7 +352,38 @@ Reload(event){
 
     this.dialogRef.close(this.affecterForm['value']);
   }
+  openDialogVerification(isLetterReceived: boolean) {
+    this.dialogRef.close();
+    const dialogRef = this.dialog.open(SuccessMessageComponent, {
+      width: '600px',
+      height: '300px',
+      data: {
+        title_label: isLetterReceived ? 'Lettre reçue avec succès' : 'Lettre non reçue',
+        sub_title_label: isLetterReceived ? 'Le client a confirmé la réception de la lettre.' : 'Le client n\'a pas encore confirmé la réception de la lettre.',
+        button_label: 'Ok',
+        success_icon: isLetterReceived,
+        echec_icon: !isLetterReceived
+      }
+    });
+  }
+  openPaymentValidationPopup(): void {
+    const dialogRef = this.dialog.open(PaymentValidationPopupComponent, {
+      width: '400px',
+      data: { message: 'ce dossier est traitée' }
+    });
 
+   
+  }
+  openRedirectPopup(): void {
+    const dialogRef = this.dialog.open(RedirectPopupComponent, {
+      width: '400px',
+      data: { message: 'ce dossier sera qualifié pour la phase contensieuse' }
+    });
+
+   
+       
+   
+  }
 }
 
 

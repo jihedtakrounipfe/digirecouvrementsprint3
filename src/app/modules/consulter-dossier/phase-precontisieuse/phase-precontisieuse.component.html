@@ -91,9 +91,42 @@
         </div>
       
           <div class="col-md-4 d-flex justify-content-end mt-4">
-            <button mat-button type="submit"  (click)="openDialogAffecter()" class="ok-btn">Assigner </button>
+            <button mat-button type="submit"  (click)="openDialogAffecter()" class="custom-button">Assigner </button>
           </div>
       </mat-card>
+
+      <mat-card class="mb-4">
+        <h4 class="fw-bold">3- Vérification de la réception de la lettre </h4>
+        <div class="row" *ngIf="precontisieuse">
+          <div class="col-md-4">
+          <p>Merci de confirmer auprés du client</p>
+          
+
+          </div>
+          <div class="col-md-4 d-flex justify-content-end mt-4">
+            <button mat-button type="submit" (click)="openDialogVerification(true)" class="ok-btn">Lettre reçu</button>          </div>
+          <div class="col-md-4 d-flex justify-content-end mt-4">
+            <button mat-button type="submit" (click)="openDialogVerification(false)" class="ok-btn">lettre non reçu</button>
+          </div>
+        </div>
+        
+          </mat-card>
+          <mat-card class="mb-4">
+            <h4 class="fw-bold">4- Paiement </h4>
+            <div class="row" *ngIf="precontisieuse">
+              <div class="col-md-4">
+              <p>Vérification de Paiement</p>
+              </div>
+              <div class="col-md-4 d-flex justify-content-end mt-4">
+                <button mat-button type="submit" (click)="openPaymentValidationPopup()" class="ok-btn">Payé</button>
+</div>
+              <div class="col-md-4 d-flex justify-content-end mt-4">
+                <button mat-button type="submit" (click)="openRedirectPopup()" class="ok-btn">Non payé</button>
+
+              </div>
+            </div>
+              </mat-card>
+
       
     <div class="form-row">
       <div [hidden]="session !== 'GROUP_DIRECTEURS'"><mat-card-subtitle class="py-2 fw-bold text-dark mt-2" >Détails de la créance</mat-card-subtitle></div>
