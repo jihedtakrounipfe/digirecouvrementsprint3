@@ -118,10 +118,10 @@
               <p>Vérification de Paiement</p>
               </div>
               <div class="col-md-4 d-flex justify-content-end mt-4">
-                <button mat-button type="submit" (click)="openPaymentValidationPopup()" class="ok-btn">Payé</button>
+                <button mat-button type="submit" (click)="openPaymentValidationPopup('paid')"  class="ok-btn">Payé</button>
 </div>
               <div class="col-md-4 d-flex justify-content-end mt-4">
-                <button mat-button type="submit" (click)="openRedirectPopup()" class="ok-btn">Non payé</button>
+                <button mat-button type="submit" (click)="openPaymentValidationPopup('notPaid')"  class="ok-btn">Non payé</button>
 
               </div>
             </div>

@@ -68,14 +68,8 @@ export class PhasePrecontisieuseComponent implements OnInit {
   dialogRef: any;
   dialog: any;
 
-  constructor(private dossiers : ListDossiersService, private api: PreviewService ,private route: ActivatedRoute,private sanitizer: DomSanitizer, private authService: AuthenticationService , private http: HttpClient , private paymentModalService: PaymentModalService) { }
-  onPayeClicked() {
-    this.paymentModalService.openPayeModal();
-  }
-
-  onNonPayeClicked() {
-    this.paymentModalService.openNonPayeModal();
-  }
+  constructor(private dossiers : ListDossiersService, private api: PreviewService ,private route: ActivatedRoute,private sanitizer: DomSanitizer, private authService: AuthenticationService , private http: HttpClient) { }
+ 
 
   ngOnInit(): void {
     //subscriptions by BehaviorSubject
@@ -352,38 +346,49 @@ Reload(event){
 
     this.dialogRef.close(this.affecterForm['value']);
   }
-  openDialogVerification(isLetterReceived: boolean) {
+  openDialogVerification(status: any) {
     this.dialogRef.close();
     const dialogRef = this.dialog.open(SuccessMessageComponent, {
       width: '600px',
       height: '300px',
       data: {
-        title_label: isLetterReceived ? 'Lettre reçue avec succès' : 'Lettre non reçue',
-        sub_title_label: isLetterReceived ? 'Le client a confirmé la réception de la lettre.' : 'Le client n\'a pas encore confirmé la réception de la lettre.',
+        title_label: status !== null ? 
+                      (status ? 'Lettre reçue avec succès' : 'Lettre non reçue') : 
+                      'Statut de la lettre inconnu',
+        sub_title_label: status !== null ? 
+                          (status ? 'Le client a confirmé la réception de la lettre.' : 'Le client n\'a pas encore confirmé la réception de la lettre.') : 
+                          'Le statut de la lettre n\'est pas encore confirmé par le client.',
         button_label: 'Ok',
-        success_icon: isLetterReceived,
-        echec_icon: !isLetterReceived
+        success_icon: status !== null ? status : false,
+        echec_icon: status !== null ? !status : true
       }
     });
   }
-  openPaymentValidationPopup(): void {
-    const dialogRef = this.dialog.open(PaymentValidationPopupComponent, {
-      width: '400px',
-      data: { message: 'ce dossier est traitée' }
+  openPaymentValidationPopup(status: string | null) {
+    this.dialogRef.close();
+    const dialogRef = this.dialog.open(SuccessMessageComponent, {
+      width: '600px',
+      height: '300px',
+      data: {
+        title_label: status !== null ? 
+                      (status === 'paid' ? 'Paiement validé' : 'Paiement non validé') : 
+                      'Statut du paiement inconnu',
+        sub_title_label: status !== null ? 
+                          (status === 'paid' ? 'Le paiement a été validé avec succès.' : 'Le paiement n\'a pas encore été validé.') : 
+                          'Le statut du paiement n\'est pas encore confirmé.',
+        button_label: 'Ok',
+        success_icon: status !== null ? (status === 'paid') : false,
+        echec_icon: status !== null ? (status !== 'paid') : true
+      }
     });
-
-   
   }
-  openRedirectPopup(): void {
-    const dialogRef = this.dialog.open(RedirectPopupComponent, {
-      width: '400px',
-      data: { message: 'ce dossier sera qualifié pour la phase contensieuse' }
-    });
+  
+  
 
    
        
    
-  }
+  
 }
 
 
