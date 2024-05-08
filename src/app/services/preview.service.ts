@@ -27,6 +27,18 @@ export class PreviewService {
         this.content = content;
         this.router.navigate([{ outlets: { overlay: ['preview', 'blob'] } }]);
     }
+     alimenterdossier(formData: FormData,nomDossier :String){
+      return this.http.post(`${environment.baseUrl}/s/com/addinn/alimenterDossier?nomDossier=${nomDossier}&alf_ticket=${this.authService.getTicketEcm()}`,formData)
+      .pipe(
+        catchError(this.errorMgmt)
+      );
+
+
+
+    }
+    getStatusDossier(nomDossier: string) {
+      return this.http.get<any>(`${environment.baseUrl}/s/com/addinn/get/statusdossierprecontensieuse?nomDossier=${nomDossier}&alf_ticket=${this.authService.getTicketEcm()}`).pipe(catchError(this.errorMgmt));
+    }
     validerdossierprecontieurseAPi(nomDossier :String) {
       const body = {
         action: 'complet'

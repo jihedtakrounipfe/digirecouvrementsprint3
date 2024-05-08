@@ -1,69 +1,95 @@
-.mt-22{
+.mt-22 {
   margin-top: -22px !important;
 }
+
 .border-secondary {
   border-color: #dee2e6!important;
 }
-.icon{
-  width:25px;
-  height:25px;
+
+.icon {
+  width: 25px;
+  height: 25px;
 }
-::ng-deep .h-input{
-  height:35px;
+
+::ng-deep .h-input {
+  height: 35px;
   background-color: #EAECEF;
 }
-.w-card{
-  width:190px !important;
-}
-.w-card-2{
-  width:230px !important;
+
+.w-card {
+  width: 190px !important;
 }
 
+.w-card-2 {
+  width: 230px !important;
+}
 
-.mat-column-fraisprecont{
+.mat-form-field {
+  width: calc(100% - 20px); /* Adjusted width to accommodate the icon */
+}
+
+.mat-form-field-wrapper {
+  position: relative; /* Positioning for the icon */
+}
+
+.mat-column-fraisprecont {
   flex: 0 0 19%;
 }
-.mat-column-hypthequebanques{
+
+.mat-column-hypthequebanques {
   flex: 0 0 12%;
 }
-.mat-column-Rang{
+
+.mat-column-Rang {
   flex: 0 0 5%;
 }
-.mat-column-select{
+
+.mat-column-select {
   flex: 0 0 8%;
 }
-.mat-cell{
+
+.mat-cell {
   font-size: 9px;
 }
-.mat-header-cell{
+
+.mat-header-cell {
   font-size: 9px;
 }
+
 .pen-icon {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
   cursor: pointer;
 }
-.custom-button {
+
+.custom-button,
+.custom-button2 {
   background-color: #220c86;
   color: white;
   width: 260px;
   margin-right: 25px;
   transition: background-color 0.3s ease;
 }
-.custom-button:hover {
+
+.custom-button:hover,
+.custom-button2:hover {
   background-color: #fff;
   color: #1170C4;
 }
-.custom-button:last-child {
+
+.custom-button:last-child,
+.custom-button2:last-child {
   margin-right: 0;
 }
+
 .ok-btn {
   background-color: white;
   color: #220c86;
   width: 260px;
   border: 2px solid #220c86;
-  transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .ok-btn:hover {

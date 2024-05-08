@@ -12,6 +12,7 @@ import { UploadFileModalComponent } from 'app/shared/upload-file-modal/upload-fi
 import { SuccessMessageComponent } from 'app/shared/success-message/success-message.component';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
 
 
 
@@ -44,6 +45,23 @@ export class PhasePrecontisieuseComponent implements OnInit {
   showFileUploadPopup: boolean = false;
   selectedFile: File | null = null;
 
+  submitted = false;
+  public FormData:FormData;
+
+
+  public tableauDamortissement:any;
+  public titreCredit:any;
+  public contratDePret:any;
+  public acteDeCaution:any;
+  public signature:any;
+  public Contrathypothecaire:any;
+  public formData = new FormData();
+  dialogRef: any;
+  // dialog: any;
+   infodossierpre: any[];
+   verifpre_form: FormGroup;
+   isEditMode: boolean = false;
+   selectedFile2: any;
 
 
   public list:boolean = true;
@@ -65,19 +83,29 @@ export class PhasePrecontisieuseComponent implements OnInit {
   public list4:boolean = true;
   public add4:boolean = false;
   public updateForm4:boolean = false;
-  dialogRef: any;
-  dialog: any;
 
-  constructor(private dossiers : ListDossiersService, private api: PreviewService ,private route: ActivatedRoute,private sanitizer: DomSanitizer, private authService: AuthenticationService , private http: HttpClient) { }
- 
+  constructor(private dossiers : ListDossiersService, private api: PreviewService ,private route: ActivatedRoute,private sanitizer: DomSanitizer, private authService: AuthenticationService , private http: HttpClient, public dialog: MatDialog, ) { }
+
 
   ngOnInit(): void {
     //subscriptions by BehaviorSubject
     this.subscription =this.api.castTag.subscribe(data=>{ this.session = data
       console.log('session data',this.session)})
     //subscriptions by folder informations
+
+    this.verifpre_form = new FormGroup({
+      tableaudamortissementchamps: new FormControl('', Validators.required),
+      titrecreditfield: new FormControl('', Validators.required),
+      contratDePretchamps: new FormControl('', Validators.required),
+      acteDeCautionchamps: new FormControl('', Validators.required),
+      signaturechamps: new FormControl('', Validators.required),
+      contratdeprethypothecairechamps: new FormControl('', Validators.required)
+    });
     this.getAll();
-    
+    this.getdataprecontentieuse();
+
+    this.verifpre_form.disable();
+
 }
 validerDonnees(){
   this.api.validerdossierprecontieurseAPi(this.nomDossier).subscribe(response => {
@@ -85,10 +113,74 @@ validerDonnees(){
 
   });
 }
-openSignalerDossierDialog(){
+signalerDonnees(){
   this.api.signalerdossierprecontieurseAPi(this.nomDossier).subscribe(response => {
     console.log(response);
 
+  });
+}
+modifierdossier(){
+  this.api.signalerdossierprecontieurseAPi(this.nomDossier).subscribe(response => {
+    console.log(response);  });
+   this.toggleEditMode();
+}
+toggleEditMode() {
+  this.isEditMode = !this.isEditMode;
+  this.verifpre_form.enable();
+
+
+}
+alimenterDonnees(){
+
+
+  // Get values of other form fields
+  const titreCredit = this.verifpre_form.get('titrecreditfield').value;
+  const contratDePret = this.verifpre_form.get('contratDePretchamps').value;
+  const acteDeCaution = this.verifpre_form.get('acteDeCautionchamps').value;
+  const signature = this.verifpre_form.get('signaturechamps')?.value;
+  const contratPretHypothecaire = this.verifpre_form.get('contratdeprethypothecairechamps').value;
+
+  // Construct FormData object with file and other fields
+  this.formData.append('tableauDamortissement', this.selectedFile2);
+  this.formData.append('action', 'complet');
+  this.formData.append('titreCredit', titreCredit);
+ this.formData.append('contratDePret', contratDePret);
+  this.formData.append('acteDeCaution', acteDeCaution);
+  this.formData.append('specimenDeSignature', signature);
+  this.formData.append('contratPretHypothecaire', contratPretHypothecaire);
+
+  this.api.alimenterdossier(this.formData,this.nomDossier).subscribe(response => {
+    console.log(response);  });
+
+
+    this.toggleEditMode();
+
+
+}
+getdataprecontentieuse() {
+  this.api.getStatusDossier(this.nomDossier).subscribe((response: any) => {
+    // Assign API response data to component variables
+    this.tableauDamortissement = response.tableauDamortissement;
+    this.titreCredit = response.titreCredit;
+    this.contratDePret = response.contratDePret;
+    this.acteDeCaution = response.acteDeCaution;
+    this.signature = response.specimenDeSignature;
+    this.Contrathypothecaire = response.contratPretHypothecaire;
+
+    // Patch form values with retrieved data
+    this.verifpre_form.patchValue({
+      tableaudamortissementchamps: this.baseUrl+this.tableauDamortissement+this.ticket,
+      titrecreditfield: this.titreCredit,
+      contratDePretchamps: this.contratDePret,
+      acteDeCautionchamps: this.acteDeCaution,
+      signaturechamps: this.signature,
+      contratdeprethypothecairechamps: this.Contrathypothecaire
+    });
+
+    console.log('API Response:', response);
+  },
+  error => {
+    console.error('Error fetching data:', error);
   });
 }
 
@@ -309,12 +401,12 @@ Reload(event){
     { name: 'ahmed'},
     { name: 'ranim' }
   ];
-  
+
   selectedHuissier: { name: string, phoneNumber: string };
-  
+
   onHuissierSelectionChange(huissierName: string) {
     const apiUrl = `https://your-api-url.com/huissiers/${huissierName}`;
-    
+
     this.http.get(apiUrl).subscribe(
       (response: any) => {
         this.selectedHuissier = { name: huissierName, phoneNumber: response.phoneNumber };
@@ -324,12 +416,12 @@ Reload(event){
       }
     );
   }
-  
+
   affecterForm = new FormGroup({
     action: new FormControl("affecter", [ Validators.required ]),
     agent: new FormControl("", [ Validators.required ]),
   });
-  
+
   openDialogAffecter() {
     this.dialogRef.close();
     this.dialog.open(SuccessMessageComponent, {
@@ -352,11 +444,11 @@ Reload(event){
       width: '600px',
       height: '300px',
       data: {
-        title_label: status !== null ? 
-                      (status ? 'Lettre reçue avec succès' : 'Lettre non reçue') : 
+        title_label: status !== null ?
+                      (status ? 'Lettre reçue avec succès' : 'Lettre non reçue') :
                       'Statut de la lettre inconnu',
-        sub_title_label: status !== null ? 
-                          (status ? 'Le client a confirmé la réception de la lettre.' : 'Le client n\'a pas encore confirmé la réception de la lettre.') : 
+        sub_title_label: status !== null ?
+                          (status ? 'Le client a confirmé la réception de la lettre.' : 'Le client n\'a pas encore confirmé la réception de la lettre.') :
                           'Le statut de la lettre n\'est pas encore confirmé par le client.',
         button_label: 'Ok',
         success_icon: status !== null ? status : false,
@@ -370,11 +462,11 @@ Reload(event){
       width: '600px',
       height: '300px',
       data: {
-        title_label: status !== null ? 
-                      (status === 'paid' ? 'Paiement validé' : 'Paiement non validé') : 
+        title_label: status !== null ?
+                      (status === 'paid' ? 'Paiement validé' : 'Paiement non validé') :
                       'Statut du paiement inconnu',
-        sub_title_label: status !== null ? 
-                          (status === 'paid' ? 'Le paiement a été validé avec succès.' : 'Le paiement n\'a pas encore été validé.') : 
+        sub_title_label: status !== null ?
+                          (status === 'paid' ? 'Le paiement a été validé avec succès.' : 'Le paiement n\'a pas encore été validé.') :
                           'Le statut du paiement n\'est pas encore confirmé.',
         button_label: 'Ok',
         success_icon: status !== null ? (status === 'paid') : false,
@@ -382,13 +474,26 @@ Reload(event){
       }
     });
   }
-  
-  
 
-   
-       
-   
-  
+
+
+
+
+
+  fileuploaddialog() {
+    const dialogRef =
+    this.dialog.open(UploadFileModalComponent,
+      {
+      data: {name: "upload File"},
+      width:'700px',
+      height:'480px',
+      disableClose: true
+      });
+    dialogRef.afterClosed().subscribe((Myfile) => {
+      console.log(Myfile,'after close popup file')
+      this.selectedFile2 = Myfile
+  })
+  }
 }
 
 

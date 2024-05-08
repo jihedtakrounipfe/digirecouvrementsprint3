@@ -13,6 +13,7 @@ export class UploadFileModalComponent implements OnInit {
   public Base64File:boolean=false;
   public BinaryFile:boolean=true;
   FormData:FormData;
+  filePhasePreCon:any
   files:File[]=[];
   constructor(
     private dialogRef: MatDialogRef<UploadFileModalComponent>,
@@ -55,6 +56,7 @@ export class UploadFileModalComponent implements OnInit {
     // console.log(file);
     var formData = new FormData();
     formData.append('file', file[0]);
+    this.filePhasePreCon = file[0]
     this.FormData=formData;
     console.log(this.FormData);
 //     for (let i = 0; i < file.length; i++) {
@@ -73,5 +75,6 @@ export class UploadFileModalComponent implements OnInit {
 
 onClosePopup(){
   this.dialogRef.close(this.FormData);
+  this.dialogRef.close(this.filePhasePreCon)
 }
 }
