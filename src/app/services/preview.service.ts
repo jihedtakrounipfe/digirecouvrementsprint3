@@ -36,6 +36,14 @@ export class PreviewService {
 
 
     }
+    getallhuissier(){
+
+
+      return this.http.get<any>(`${environment.baseUrl}/s/com/addinn/get/getalltiers?alf_ticket=${this.authService.getTicketEcm()}`).pipe(catchError(this.errorMgmt));
+    }
+gethuissiernumber(huissierName:string){
+  return this.http.get<any>(`${environment.baseUrl}/s/com/addinn/get/gethuissiernumber?huissierName=${huissierName}&alf_ticket=${this.authService.getTicketEcm()}`).pipe(catchError(this.errorMgmt));
+}
     getStatusDossier(nomDossier: string) {
       return this.http.get<any>(`${environment.baseUrl}/s/com/addinn/get/statusdossierprecontensieuse?nomDossier=${nomDossier}&alf_ticket=${this.authService.getTicketEcm()}`).pipe(catchError(this.errorMgmt));
     }
@@ -58,10 +66,33 @@ export class PreviewService {
         catchError(this.errorMgmt)
       );
     }
+    apireceptionlettre(body: any,nomDossier :String){
 
+      return this.http.post(`${environment.baseUrl}/s/com/addinn/huissierLettre?nomDossier=${nomDossier}&&alf_ticket=${this.authService.getTicketEcm()}`,body)
+      .pipe(
+        catchError(this.errorMgmt)
+      );
+    }
+    apireverificationpaimentpre(body: any,nomDossier :String){
+
+      return this.http.post(`${environment.baseUrl}/s/com/addinn/verifierPaimentPrecont?nomDossier=${nomDossier}&&alf_ticket=${this.authService.getTicketEcm()}`,body)
+      .pipe(
+        catchError(this.errorMgmt)
+      );
+    }
+affecterhuissierapi(nomDossier:string,body:any){
+  return this.http.post(`${environment.baseUrl}/s/com/addinn/AffecterHuisser?nomDossier=${nomDossier}&&alf_ticket=${this.authService.getTicketEcm()}`,body)
+  .pipe(
+    catchError(this.errorMgmt)
+  );
+}
 
     getuserByGroups(user){
       return this.http.get(`${environment.baseUrl}/s/com/addinn/get/getGroups?userName=${user}&alf_ticket=${this.authService.getTicketEcm()}`)
+      .pipe(catchError(this.errorMgmt));
+    }
+    getcurrenttask(nomDossier :String){
+      return this.http.get(`${environment.baseUrl}/s/com/addinn/get/tachecourante?nomDossier=${nomDossier}&alf_ticket=${this.authService.getTicketEcm()}`)
       .pipe(catchError(this.errorMgmt));
     }
 

@@ -13,6 +13,7 @@ import { SuccessMessageComponent } from 'app/shared/success-message/success-mess
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationModalComponent } from 'app/shared/confirmation-modal/confirmation-modal.component';
 
 
 
@@ -63,6 +64,7 @@ export class PhasePrecontisieuseComponent implements OnInit {
    isEditMode: boolean = false;
    selectedFile2: any;
 
+   huissiersnom: string[] = [];
 
   public list:boolean = true;
   public add:boolean = false;
@@ -83,6 +85,9 @@ export class PhasePrecontisieuseComponent implements OnInit {
   public list4:boolean = true;
   public add4:boolean = false;
   public updateForm4:boolean = false;
+  task: any;
+  selectedHuissier: { name: string, phoneNumber: string } | null = null;
+
 
   constructor(private dossiers : ListDossiersService, private api: PreviewService ,private route: ActivatedRoute,private sanitizer: DomSanitizer, private authService: AuthenticationService , private http: HttpClient, public dialog: MatDialog, ) { }
 
@@ -101,34 +106,254 @@ export class PhasePrecontisieuseComponent implements OnInit {
       signaturechamps: new FormControl('', Validators.required),
       contratdeprethypothecairechamps: new FormControl('', Validators.required)
     });
+
     this.getAll();
     this.getdataprecontentieuse();
-
-    this.verifpre_form.disable();
+this.taskcourante();
+this.getallacharge();
 
 }
+buttoncontrol(buttonname: string): boolean {
+/*   console.log('rrrrrrrrrr',this.task.taskName,this.task && this.task.taskName === buttonname)
+ */  if (this.task.taskName === "Alimentation dossier") {
+    this.verifpre_form.enable();
+  } else {
+
+    this.verifpre_form.disable();
+  }
+  return this.task && this.task.taskName === buttonname;
+}
+taskcourante() {
+  this.api.getcurrenttask(this.nomDossier).subscribe(
+    response => {
+      console.log(response);
+      this.task = response;
+
+      // Check if the response indicates "Alimentation dossier"
+
+    },
+    error => {
+      console.error('Error:', error);
+    }
+  );
+
+}
+openDialogAffecter() {
+  if (this.dialogRef) {
+    this.dialogRef.close();
+  }
+
+  const dialogRef = this.dialog.open(SuccessMessageComponent, {
+    width: '600px',
+    height: '300px',
+    data: {
+      title_label: "Email de réception du mandat envoyé à l'huissier.",
+      button_label: 'OK',
+      success_icon: true,
+      echec_icon: false
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('The dialog was closed');
+    if (result) {
+      this.affecterhuissier();
+    }
+  });
+
+  this.dialogRef = dialogRef;
+}
+
+openDialoglettrerecue() {
+  if (this.dialogRef) {
+    this.dialogRef.close();
+  }
+
+  const dialogRef = this.dialog.open(SuccessMessageComponent, {
+    width: '600px',
+    height: '200px',
+    data: {
+      title_label: "La lettre a été bien reçu au débiteur",
+      button_label: 'OK',
+      success_icon: false,
+      echec_icon: false
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('The dialog was closed');
+    if (result) {
+      this.lettrerecuebutton('lettre recue');
+    }
+  });
+
+  this.dialogRef = dialogRef;
+}
+
+openDialoglettrenonrecue() {
+  if (this.dialogRef) {
+    this.dialogRef.close();
+  }
+
+  const dialogRef = this.dialog.open(SuccessMessageComponent, {
+    width: '600px',
+    height: '200px',
+    data: {
+      title_label: "La lettre n'a pas été bien reçue au débiteur",
+      button_label: 'Signaler le dossier',
+      success_icon: false,
+      echec_icon: false
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('The dialog was closed');
+    if (result) {
+      this.lettrerecuebutton('lettre recue');
+    }
+  });
+
+  this.dialogRef = dialogRef;
+}
+openDialogpaye() {
+  if (this.dialogRef) {
+    this.dialogRef.close();
+  }
+
+  const dialogRef = this.dialog.open(SuccessMessageComponent, {
+    width: '600px',
+    height: '200px',
+    data: {
+      title_label: "Ce dossier est traitée",
+      button_label: 'Valider',
+      success_icon: false,
+      echec_icon: false
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('The dialog was closed');
+    if (result) {
+      this.verificationpaiementpre('Paye')
+    }
+  });
+
+  this.dialogRef = dialogRef;
+}
+
+openDialognonpaye() {
+  if (this.dialogRef) {
+    this.dialogRef.close();
+  }
+
+  const dialogRef = this.dialog.open(SuccessMessageComponent, {
+    width: '600px',
+    height: '200px',
+    data: {
+      title_label: "Ce dossier sera qualifié pour la phase contentieuse",
+      button_label: 'Valider',
+      success_icon: false,
+      echec_icon: false
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('The dialog was closed');
+    if (result) {
+      this.verificationpaiementpre('Non Paye')
+    }
+  });
+
+  this.dialogRef = dialogRef;
+}
+
 validerDonnees(){
   this.api.validerdossierprecontieurseAPi(this.nomDossier).subscribe(response => {
+    this.taskcourante();
     console.log(response);
 
   });
 }
 signalerDonnees(){
   this.api.signalerdossierprecontieurseAPi(this.nomDossier).subscribe(response => {
+    this.taskcourante();
     console.log(response);
 
   });
 }
 modifierdossier(){
   this.api.signalerdossierprecontieurseAPi(this.nomDossier).subscribe(response => {
+    this.taskcourante();
     console.log(response);  });
-   this.toggleEditMode();
 }
+/* toggleEditMode() { */
+ /*  console.log("Task Name:", this.task.taskName);
+  // Vérifiez si la tâche actuelle est celle attendue pour activer le mode d'édition
+  if (this.task.taskName === "Alimentation dossier") {
+    this.isEditMode = !this.isEditMode;
+    this.verifpre_form.enable();
+  } else {
+    // Si la tâche actuelle n'est pas celle attendue, désactivez le mode d'édition
+    this.isEditMode = false;
+    this.verifpre_form.disable();
+  }
+} */
 toggleEditMode() {
   this.isEditMode = !this.isEditMode;
   this.verifpre_form.enable();
 
 
+}
+openValiderpre() {
+  const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+    width: '650px',
+    height: '370px',
+    data:{
+      signaler:false,
+      valider:true,
+      title_label: 'Valider le dossier',
+      sub_title_label: 'voulez-vous valider les donnees?',
+      button_label_1: 'Annuler',
+      button_label_2: 'OK'
+    }
+  });
+  dialogRef.afterClosed().subscribe(res => {res
+    this.api.validerdossierprecontieurseAPi( this.nomDossier).subscribe({
+      complete: () => {
+        this.taskcourante();
+        this.api.OpenSuccessDialog();
+        console.log('Validation submitted !!!');
+
+      },
+      error: (e) => {
+        console.log(e);
+      }})
+  })
+}
+openSignalerpre() {
+  const dialogRef = this.dialog.open(ConfirmationModalComponent, {
+    width: '650px',
+    height: '370px',
+    data:{
+      signaler:true,
+      valider:false,
+      title_label: 'Signaler le dossier',
+      sub_title_label: 'voulez-vous signaler le dossier ?',
+      button_label_1: 'Annuler',
+      button_label_2: 'OK'
+    }
+  });
+  dialogRef.afterClosed().subscribe(res => {res
+    this.api.signalerdossierprecontieurseAPi( this.nomDossier).subscribe({
+      complete: () => {
+        this.taskcourante();
+        this.api.OpenSuccessDialog();
+        console.log('signaler submitted !!!');
+      },
+      error: (e) => {
+        console.log(e);
+      }})
+  })
 }
 alimenterDonnees(){
 
@@ -150,10 +375,11 @@ alimenterDonnees(){
   this.formData.append('contratPretHypothecaire', contratPretHypothecaire);
 
   this.api.alimenterdossier(this.formData,this.nomDossier).subscribe(response => {
+    this.taskcourante();
     console.log(response);  });
 
 
-    this.toggleEditMode();
+
 
 
 }
@@ -169,7 +395,7 @@ getdataprecontentieuse() {
 
     // Patch form values with retrieved data
     this.verifpre_form.patchValue({
-      tableaudamortissementchamps: this.baseUrl+this.tableauDamortissement+this.ticket,
+      tableaudamortissementchamps: "Drag & Drop or Click yo upload",//this.baseUrl+this.tableauDamortissement+this.ticket
       titrecreditfield: this.titreCredit,
       contratDePretchamps: this.contratDePret,
       acteDeCautionchamps: this.acteDeCaution,
@@ -396,20 +622,40 @@ Reload(event){
     // Close the popup
     this.showFileUploadPopup = false;
   }
-  huissiers = [
-    { name: 'aziz' },
-    { name: 'ahmed'},
-    { name: 'ranim' }
-  ];
 
-  selectedHuissier: { name: string, phoneNumber: string };
+
+
+
+  getallacharge() {
+    this.api.getallhuissier().subscribe(
+      (response: any) => {
+        // Extract Huissier names
+        const huissiers = response.tiers.Huissier;
+        const huissierNames = huissiers.map(huissier => huissier.nomhuissier);
+
+        // Log the names to verify
+        console.log(huissierNames);
+
+        // Assign the names to the component property
+        this.huissiersnom = huissierNames;
+      },
+      error => {
+        console.error('Error:', error);
+      }
+    );
+  }
+
+
+
+
+
 
   onHuissierSelectionChange(huissierName: string) {
-    const apiUrl = `https://your-api-url.com/huissiers/${huissierName}`;
-
-    this.http.get(apiUrl).subscribe(
+    this.api.gethuissiernumber(huissierName).subscribe(
       (response: any) => {
-        this.selectedHuissier = { name: huissierName, phoneNumber: response.phoneNumber };
+        console.log(response.huissiers[0].numeroHuissier)
+        const phoneNumber = response.huissiers[0].numeroHuissier;
+        this.selectedHuissier = { name: huissierName, phoneNumber: phoneNumber };
       },
       (error: any) => {
         console.error('Error fetching phone number:', error);
@@ -417,27 +663,34 @@ Reload(event){
     );
   }
 
+
   affecterForm = new FormGroup({
     action: new FormControl("affecter", [ Validators.required ]),
     agent: new FormControl("", [ Validators.required ]),
   });
 
-  openDialogAffecter() {
-    this.dialogRef.close();
-    this.dialog.open(SuccessMessageComponent, {
-      width: '600px',
-      height: '300px',
-      data:{
-        title_label: 'Le dossier a été affecté avec succès',
-        sub_title_label: 'un mail a été envoyé au huissier',
-        button_label: 'Ok',
-        success_icon:true,
-        echec_icon:false
-      }
-    });
+  affecterhuissier() {
+    if (!this.selectedHuissier) {
+      console.error('No huissier selected');
+      return;
+    }
+    const body = {
+      "huissierName": this.selectedHuissier.name,
+      "huissierPhoneNumber":this.selectedHuissier.phoneNumber
+    }
 
-    this.dialogRef.close(this.affecterForm['value']);
+
+
+this.api.affecterhuissierapi(this.nomDossier, body).subscribe(
+  response => {
+    console.log('Huissier assigned successfully:', response);
+  },
+  error => {
+    console.error('Error assigning huissier:', error);
   }
+);
+  }
+
   openDialogVerification(status: any) {
     this.dialogRef.close();
     const dialogRef = this.dialog.open(SuccessMessageComponent, {
@@ -494,6 +747,35 @@ Reload(event){
       this.selectedFile2 = Myfile
   })
   }
+
+  lettrerecuebutton(action: string) {
+    const body = { action: action };
+
+    this.api.apireceptionlettre(body, this.nomDossier).subscribe(
+      response => {
+        console.log(response);
+        this.taskcourante();
+      },
+      error => {
+        console.error('Error:', error);
+      }
+    );}
+
+    verificationpaiementpre(action: string) {
+      const body = { action: action };
+
+      this.api.apireverificationpaimentpre(body,this.nomDossier).subscribe(
+        response => {
+          console.log(response);
+          this.taskcourante();
+        },
+        error => {
+          console.error('Error:', error);
+        }
+      );}
+
+
+
 }
 
 

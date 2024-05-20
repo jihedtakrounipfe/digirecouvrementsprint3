@@ -72,10 +72,10 @@
 
         <div class="row">
           <div  class="col-md-12 d-flex justify-content-end mt-4">
-            <button [hidden]="session !== 'GROUP_CHARGES'" mat-raised-button class="custom-button2" *ngIf="!isEditMode" (click)="modifierdossier()">dossier incomplet</button>
-            <button [hidden]="session !== 'GROUP_CHARGES'"mat-raised-button class="custom-button2" *ngIf="!isEditMode" (click)="validerDonnees()">Valider les données</button>
-            <button [hidden]="session !== 'GROUP_CHARGES'" mat-raised-button class="custom-button2" *ngIf="isEditMode" (click)="signalerDonnees()">Signaler</button>
-            <button [hidden]="session !== 'GROUP_CHARGES'"mat-raised-button class="custom-button2" *ngIf="isEditMode" (click)="alimenterDonnees()">enregister</button>
+            <button [hidden]="session !== 'GROUP_CHARGES'" mat-raised-button class="custom-button2"  [disabled]="!buttoncontrol('Verification dossier')"*ngIf="buttoncontrol('Verification dossier')" (click)="modifierdossier()">dossier incomplet</button>
+            <button [hidden]="session !== 'GROUP_CHARGES'"mat-raised-button class="custom-button2" [disabled]="!buttoncontrol('Verification dossier')"*ngIf="buttoncontrol('Verification dossier')" (click)="openValiderpre()">Valider les données</button>
+            <button [hidden]="session !== 'GROUP_CHARGES'" mat-raised-button class="custom-button2" *ngIf="buttoncontrol('Alimentation dossier')" (click)="openSignalerpre()">Signaler</button>
+            <button [hidden]="session !== 'GROUP_CHARGES'"mat-raised-button class="custom-button2" *ngIf="buttoncontrol('Alimentation dossier')" (click)="alimenterDonnees()">enregister</button>
 
           </div>
         </div>
@@ -104,11 +104,12 @@
       <div class="row align-items-center" *ngIf="precontisieuse">
         <div class="col-md-4">
           <mat-label class="pb-4 fw-bold fnt-10">Choisissez votre huissier notaire</mat-label>
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-select placeholder="Sélectionner un huissier" formControlName="huissier" (selectionChange)="onHuissierSelectionChange($event.value.name)">
-              <mat-option *ngFor="let s of huissiers" [value]="s">{{s.name}}</mat-option>
-            </mat-select>
-          </mat-form-field>
+<mat-form-field appearance="outline" class="w-100">
+  <mat-select placeholder="Sélectionner un huissier" (selectionChange)="onHuissierSelectionChange($event.value)">
+    <mat-option *ngFor="let s of huissiersnom" [value]="s">{{s}}</mat-option>
+  </mat-select>
+</mat-form-field>
+
         </div>
 
         <div class="col-md-4">
@@ -134,9 +135,9 @@
 
         </div>
         <div class="col-md-4 d-flex justify-content-end mt-4">
-          <button mat-button type="submit" (click)="openDialogVerification(true)" class="ok-btn">Lettre reçu</button>          </div>
+          <button mat-button type="submit" (click)="openDialoglettrerecue()" [disabled]="!buttoncontrol('communication avec le huissier notaire')"class="ok-btn">Lettre reçu</button>          </div>
         <div class="col-md-4 d-flex justify-content-end mt-4">
-          <button mat-button type="submit" (click)="openDialogVerification(false)" class="ok-btn">lettre non reçu</button>
+          <button mat-button type="submit" (click)="openDialoglettrenonrecue()"[disabled]="!buttoncontrol('communication avec le huissier notaire')" class="ok-btn">lettre non reçu</button>
         </div>
       </div>
 
@@ -148,10 +149,10 @@
             <p>Vérification de Paiement</p>
             </div>
             <div class="col-md-4 d-flex justify-content-end mt-4">
-              <button mat-button type="submit" (click)="openPaymentValidationPopup('paid')"  class="ok-btn">Payé</button>
+              <button mat-button type="submit" (click)="openDialogpaye()" [disabled]="!buttoncontrol('Verification de paiement')" class="ok-btn">Payé</button>
 </div>
             <div class="col-md-4 d-flex justify-content-end mt-4">
-              <button mat-button type="submit" (click)="openPaymentValidationPopup('notPaid')"  class="ok-btn">Non payé</button>
+              <button mat-button type="submit" (click)="openDialognonpaye()"  [disabled]="!buttoncontrol('Verification de paiement')"class="ok-btn">Non payé</button>
 
             </div>
           </div>
